@@ -1,50 +1,35 @@
-import Totales from './utilities/compra'
-import './Cards.css'
-import { useState } from 'react'
+import { Link } from "react-router-dom";
 
-const CardPizza = ({ img, name, price, ingredients, description }) => {
-  const [Mostrar, setMostrar] = useState(true)
-  const toggleVisibility = () => {
-    setMostrar(!Mostrar)
-  }
+const CardPizza = ({ pizza }) => {
+    const { name, img, price, ingredients, desc } = pizza
   return (
-    <>
-      <div className='contenedor'>
-        <div className='fotos_card'>
-          <img className='foto' src={img} alt={name} />
-        </div>
-        <div className='name_pizza'>
-          <h5>Pizza {name}</h5>
-        </div>
-        {!Mostrar && (
-          <div className='descripcion'>
-            <p>{description}</p>
-          </div>
-        )}
+    <div className="card container">
+      <img className = "border rounded" src= {img} alt={name} />
+        <h2 className='text-start fs-3 fw-bold m-2 text-capitalize'>{name}</h2>
         <hr />
-        <div className='box_ingredientes'>
-          <span className='text-muted tex_sub_ing'> 🍕Ingredientes: </span>
-          <ul className='text_ingredientes'>{ingredients.map((i) => (
-            <li key={i}> {i}</li>
+
+        <h6>🍕Ingredientes:</h6>
+        
+        <ul className="list-unstyled text-capitalize">
+          {ingredients.map((ingredient, index) => (
+            <li key = {index}>{ingredient}</li>
           ))}
-          </ul>
-        </div>
+        </ul>
+        
+        {/* <hr /> */}
+
+        {/*<p className="card-text">{desc}</p>*/}
         <hr />
-        <div className='box_precio'>
-          <h6>PRECIO: ${Totales(price)}</h6>
-        </div>
 
-        <div className='box'>
-          <div className='box1'>
-            <button type='button' className='boton1' onClick={toggleVisibility}> {Mostrar ? 'Ver Más 👀' : 'Ver Menos'}</button>
-          </div>
-          <div className='box2'>
-            <button type='button' className='boton2'>Añadir 🛒</button>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
+        <p className='fs-4 fw-bold'>Precio: ${price.toLocaleString()}</p>
+        <div className='botones-card'>
+          <Link to="/pizza/p001" className="btn btn-info">
+              Ver más 👀
+          </Link>
+            <button className='bg-dark text-white border rounded'>Añadir 🛒</button>
+        </div> 
+    </div>
+  );
+};
 
-export default CardPizza
+export default CardPizza;

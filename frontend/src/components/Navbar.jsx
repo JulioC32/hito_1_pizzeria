@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import Totales from './utilities/compra'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const total = 25000
