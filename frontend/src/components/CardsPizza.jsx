@@ -1,35 +1,82 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { PizzaContext } from "../Context/PizzaContext";
 
-const CardPizza = ({ pizza }) => {
-    const { name, img, price, ingredients, desc } = pizza
+const CardPizza = ({ id, name, price, ingredients, desc, img }) => {
+  const { carroCompras, setCarroCompras, setTotalCarro } =
+    useContext(PizzaContext);
+
+  const agregarAlCarrito = () => {
+    const pizzaToAdd = {
+      id,
+      name,
+      price,
+      ingredients,
+      desc,
+      img,
+      count: 1, 
+    };
+
+
+    setCarroCompras((prevCarroCompras) => {
+      const pizzaExistente = prevCarroCompras.find(
+        (pizza) => pizza.id.toLowerCase() === id.toLowerCase()
+      );
+      if (pizzaExistente) {
+        return prevCarroCompras.map((pizza) =>
+          pizza.id.toLowerCase() === id.toLowerCase() ? { ...pizza, count: pizza.count + 1 } : pizza
+        );
+      } else {
+        return [...prevCarroCompras, pizzaToAdd];
+      }
+    });
+
+    setTotalCarro((prevTotal) => prevTotal + price);
+  };
+
   return (
-    <div className="card container">
-      <img className = "border rounded" src= {img} alt={name} />
-        <h2 className='text-start fs-3 fw-bold m-2 text-capitalize'>{name}</h2>
-        <hr />
+    <div className='card col-12 col-sm-6 col-md-4 mb-4' key={id}>
+      <img src={img} className='card-img-top' alt={name} />
+      <div className='card-body'>
+        <h5 className='card-title fw-semibold fs-5'>Pizza {name}</h5>
+      </div>
+      <ul className='list-group list-group-flush'>
+        <li className='list-group-item' key={id + "ingr"}>
+          <h5 className='card-text text-center mb-1'>Ingredientes</h5>
 
-        <h6>🍕Ingredientes:</h6>
-        
-        <ul className="list-unstyled text-capitalize">
-          {ingredients.map((ingredient, index) => (
-            <li key = {index}>{ingredient}</li>
-          ))}
-        </ul>
-        
-        {/* <hr /> */}
-
-        {/*<p className="card-text">{desc}</p>*/}
-        <hr />
-
-        <p className='fs-4 fw-bold'>Precio: ${price.toLocaleString()}</p>
-        <div className='botones-card'>
-          <Link to="/pizza/p001" className="btn btn-info">
-              Ver más 👀
-          </Link>
-            <button className='bg-dark text-white border rounded'>Añadir 🛒</button>
-        </div> 
+          <ul className='list-group'>
+            <p className='card-text text-center fs-6'>
+              {renderIngredients(ingredients)}
+            </p>
+          </ul>
+        </li>
+        <li className='list-group-item' key={id + "desc"}>
+          <p className='card-text text-center fs-6'>{desc}</p>
+        </li>
+        <li className='list-group-item' key={id + "pric"}>
+          <p className='text-center fw-semibold fs-3'>
+            Precio: ${price.toLocaleString("es-cl")}
+          </p>
+        </li>
+      </ul>
+      <div className='card-body d-flex justify-content-between'>
+        <Link to={`/Pizza/${id}`} className='btn btn-light'>
+          Ver Más 👀
+        </Link>
+        <a className='btn btn-dark' onClick={agregarAlCarrito}>
+          Añadir 🛒
+        </a>
+      </div>
     </div>
   );
 };
-
 export default CardPizza;
+
+const renderIngredients = (ingredients = []) => {
+  return ingredients.map((i, index) => (
+    <li className='list-group-item' key={index}>
+      🍕 {i}
+    </li>
+  ));
+};
+

@@ -1,39 +1,43 @@
-import Home from "./pages/Home";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./main.css";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 import Footer from "./components/Footer";
-import Pizza from "./pages/Pizza";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Cart from "./pages/Cart";
-import Profile from "./pages/Profile"
+import Pizza from "./pages/Pizza";
 import NotFound from "./pages/NotFound";
-import { Route, Routes, useLocation } from "react-router-dom";
+import Profile from "./pages/Profile";
+import PizzaProvider from "./Context/PizzaContext";
 
-const App = () => {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+
+function App() {
   return (
-    <div className="app-container">
-      <Navbar />
-
-      {isHome ? (
-        <Home />
-      ) : (
-        <main className="main-content">
+    <div className='container'>
+      <div className='row align-items-start'>
+        <div className='col'>
+          <PizzaProvider>
+          <Navbar />
           <Routes>
-            {/* <Route path="/" element={<Home />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/pizza/p001" element={<Pizza />} />
-            <Route path="/*" element = {<NotFound/>}/>
-            <Route path="/profile" element = {<Profile/>} />
+            <Route path='/' element={<Home />} />
+            <Route path='/Home' element={<Home />} />
+            <Route path='/Register' element={<Register />} />
+            <Route path='/Login' element={<Login />} />
+            <Route path='/Cart' element={<Cart />} />
+            <Route path='/Profile' element={<Profile />} />
+            <Route path='/Pizza/:id' element={<Pizza />} />
+            <Route path='*' element={<NotFound />} />
           </Routes>
-        </main>
-      )}
-      <Footer />
+          <Footer />
+          </PizzaProvider>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default App;

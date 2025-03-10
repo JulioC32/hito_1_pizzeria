@@ -1,9 +1,10 @@
-const Header =() => {
-  return(
-      <div className="encabezado">
-          <h1>¡Pizzería Mamma Mía!</h1>
-          <h2 className="subtitulo">¡Tenemos las mejores Pizzas que Podrás Encontrar!!</h2>
-      </div>
+const Header = () => {
+  return (
+    <div className='header d-flex flex-column text-white justify-content-center text-center'>
+        <h1>Pizzeria Mamma Mia</h1> 
+        <h5>Tenemos las mejores pizzas que podrás encontrar!</h5>   
+        <hr className="w-75 mx-auto"/>
+    </div>
   )
 }
 

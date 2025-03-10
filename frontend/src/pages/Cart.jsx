@@ -1,93 +1,100 @@
-import { useState } from "react";
-import { pizzaCart } from "../data/pizzas";
+import { useContext, useMemo } from "react";
+
+import { PizzaContext } from "../Context/PizzaContext";
 
 const Cart = () => {
-  const [cart, setCart] = useState(pizzaCart);
+  const { carroCompras, setCarroCompras, setTotalCarro } =
+    useContext(PizzaContext);
 
-  const calcularTotal = () => {
-    let total = 0;
-    cart.forEach((item) => {
-      total += item.price * item.count;
-    });
-    return total;
-  };
 
-  const aumentarTotal = (id) => {
-    const carroMas = cart.map((item) => {
-      if (item.id === id) {
-        return {
-          ...item,
-          count: item.count + 1,
-        };
-      }
-      return item;
-    });
-    setCart(carroMas);
-  };
-
-  const disminuirTotal = (id) => {
-    const carroMenos = cart
-      .map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            count: item.count - 1,
-          };
+  const agregarCantidad = (p) => {
+    setCarroCompras((prevCarroCompras) => {
+      return prevCarroCompras.map((pizza) => {
+        if (pizza.id === p.id) {
+          return { ...pizza, count: pizza.count + 1 };
         }
-        return item;
-      })
-      .filter((item) => item.count > 0);
-    setCart(carroMenos);
+        return pizza;
+      });
+    });
   };
+
+  const diminuirCantidad = (p) => {
+    setCarroCompras((prevCarroCompras) => {
+      return prevCarroCompras
+        .map((pizza) => {
+          if (pizza.id === p.id) {
+            const nuevoCount = pizza.count - 1;
+            if (nuevoCount <= 0) {
+              return null;
+            }
+            return { ...pizza, count: nuevoCount };
+          }
+          return pizza;
+        })
+        .filter(Boolean);
+    });
+  };
+
+  const productosOrdenados = useMemo(() => {
+    return [...carroCompras].sort((a, b) => {
+      if (a.id < b.id) return -1;
+      if (a.id > b.id) return 1;
+      return 0;
+    });
+  }, [carroCompras]);
+
+  const totalCarro = useMemo(() => {
+    let monto = 0;
+    for (const pizza of carroCompras) {
+      monto += pizza.count * pizza.price;
+    }
+    return monto;
+  }, [carroCompras]);
+
+  // Actualiza el total en el contexto solo cuando cambia el total calculado
+  useMemo(() => {
+    setTotalCarro(totalCarro);
+  }, [totalCarro, setTotalCarro]);
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Carrito de Compras</h2>
-
-      {cart.map((item) => (
-        <div className="card mb-3 mx-auto w-50" key={item.id}>
-          <div className="row g-0 align-items-center">
-            <div className="col-3 d-flex justify-content-center">
-              <img
-                src={item.img}
-                alt={item.name}
-                className="img-fluid rounded"
-              />
-            </div>
-            <div className="col-5">
-              <div className="card-body p-2">
-                <h6 className="card-title text-capitalize">{item.name}</h6>
-                <p className="card-text m-0">
-                  Precio: ${item.price.toLocaleString()}
-                </p>
+    <>
+      <div id='carrito' className='p-2'>
+        <h2 className='fs-3 text-info'>Mi Carrito de compras</h2>
+        {productosOrdenados.map((p) => (
+          <div className='card mb-3 w-50' key={p.id}>
+            <div className='row g-0'>
+              <div className='col-md-4'>
+                <img src={p.img} className='w-75 rounded-start img-thumbnail' />
               </div>
-            </div>
-            <div className="col-4 d-flex justify-content-center">
-              <div className="btn-group d-flex align-items-center">
-                <button
-                  className="btn btn-outline-danger"
-                  onClick={() => disminuirTotal(item.id)}
-                >
-                  -
-                </button>
-                <span className="btn btn-light p-3">{item.count}</span>
-                <button
-                  className="btn btn-outline-success"
-                  onClick={() => aumentarTotal(item.id)}
-                >
-                  +
-                </button>
+              <div className='col-md-8'>
+                <div className='card-body d-flex justify-content-around align-self-center'>
+                  <h5 className='card-title text-capitalize'>{p.name}</h5>
+                  <p className='card-text'>
+                    ${p.price.toLocaleString("es-cl")}
+                  </p>
+                  <button
+                    type='button'
+                    className='btn btn-danger'
+                    onClick={() => diminuirCantidad(p)}>
+                    -
+                  </button>
+                  <p className='card-text'>{p.count}</p>
+                  <button
+                    type='button'
+                    className='btn btn-success'
+                    onClick={() => agregarCantidad(p)}>
+                    +
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-
-      <div className="text-end mt-4">
-        <h3>Total de la compra: ${calcularTotal().toLocaleString()}</h3>
-        <button className="btn btn-success m-2 btn-lg">Pagar</button>
+        ))}
       </div>
-    </div>
+      <p className='fs-3 text-info'>
+        Total: ${totalCarro.toLocaleString("es-cl")}
+      </p>
+    </>
   );
 };
 

@@ -1,32 +1,45 @@
-import React from "react";
-import profileImage from "../assets/profile.jpg";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { PizzaContext } from "../Context/PizzaContext";
 
 const Profile = () => {
+  const { tokenLogin, setTokenLogin } = useContext(PizzaContext);
+  const cerrarSesion = () => {
+    console.log('Cerrando sesión...');
+    setTokenLogin(false);
+  };
+
   return (
-    <div
-      className="d-flex flex-column align-items-center w-50 border rounded"
-      style={{ backgroundColor: "#e9e9e9" }}
-    >
-      <h3 className="w-100 text-white bg-dark rounded">Perfil de Usuario</h3>
-      <img
-        src={profileImage}
-        alt="Foto de perfil"
-        className="w-25 rounded-circle border border-dark"
-      />
-
-      <h5 className="d-flex align-items-center justify-content-center mt-3 w-75 border border-info rounded bg-white p-3"
-      style={{height: "35px"}}>Nombre: Julio Castillo</h5>
-
-      <h5
-        className="d-flex align-items-center justify-content-center mt-2 w-75 border border-info rounded bg-white p-3"
-        style={{ height: "35px" }}
-      >
-        Email: julio123@gmail.com
-      </h5>
-      <Link to="/login" className="btn btn-danger w-75 m-4">
-        Cerrar sesión
-      </Link>
+    <div class='card text-center d-inline-flex m-2'>
+      <div class='card-header'>
+        <ul class='nav nav-tabs card-header-tabs'>
+          <li class='nav-item'>
+            <a class='nav-link active' aria-current='true' href='#'>
+              Mi perfil
+            </a>
+          </li>
+          <li class='nav-item'>
+            <a class='nav-link' href='#'>
+              Mis pedidos
+            </a>
+          </li>
+          <li class='nav-item'>
+            <a class='nav-link' href='#'>
+              Editar mis datos
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class='card-body'>
+        <h5 class='card-title'>Mis datos</h5>
+        <p class='card-text'>Correo: desafio@desafio.cl</p>
+        <Link
+          to='/Home'
+          className='btn btn-primary'
+          onClick={() => cerrarSesion()}>
+          Cerrar Sesión
+        </Link>
+      </div>
     </div>
   );
 };

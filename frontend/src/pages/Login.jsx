@@ -1,7 +1,10 @@
-import React from "react";
+
 import { useState } from "react";
 import { useFormState } from "react-dom";
-import Swal from "sweetalert2";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import "../main.css";
+import { PizzaContext } from "../Context/PizzaContext";
 
 function Login() {
   const [userEmail, setUserEmail] = useState("");
